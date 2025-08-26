@@ -5,21 +5,41 @@ function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  // Handle input change
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.email || !form.password) {
       alert("Please fill in all fields");
       return;
     }
-    const registeredUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-    if (!registeredUsers.includes(form.email)) {
+
+    // Retrieve registered users
+    const registeredUsers =
+      JSON.parse(localStorage.getItem("registeredUsers")) || [];
+
+    // Find user object
+    const foundUser = registeredUsers.find(
+      (user) => user.email === form.email
+    );
+
+    if (!foundUser) {
       alert("Email not registered. Please sign up first.");
       return;
     }
+
+    // Verify password
+    if (foundUser.password !== form.password) {
+      alert("Incorrect password. Try again.");
+      return;
+    }
+
+    // Login success: store session, navigate
     localStorage.setItem("userEmail", form.email);
-    alert("Login success");
+    alert("Login successful!");
     navigate("/home");
   };
 
@@ -49,8 +69,11 @@ function Login() {
           <button type="submit" style={buttonStyle}>Login</button>
         </form>
         <p style={switchTextStyle}>
-          Don't have an account?{" "}
-          <button onClick={() => navigate("/signup")} style={switchButtonStyle}>
+          Don’t have an account?
+          <button
+            onClick={() => navigate("/signup")}
+            style={switchButtonStyle}
+          >
             Sign up here
           </button>
         </p>
@@ -59,7 +82,7 @@ function Login() {
   );
 }
 
-// Reuse the same styles as Signup
+// Styles (can copy to Signup for a unified feel)
 const containerStyle = {
   minHeight: "100vh",
   display: "flex",
@@ -68,7 +91,6 @@ const containerStyle = {
   background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
   fontFamily: "'Montserrat', sans-serif",
 };
-
 const boxStyle = {
   backgroundColor: "white",
   padding: "40px",
@@ -77,7 +99,6 @@ const boxStyle = {
   width: "320px",
   textAlign: "center",
 };
-
 const labelStyle = {
   display: "block",
   textAlign: "left",
@@ -85,7 +106,6 @@ const labelStyle = {
   fontWeight: "600",
   color: "#333",
 };
-
 const inputStyle = {
   width: "100%",
   padding: 12,
@@ -96,7 +116,6 @@ const inputStyle = {
   outline: "none",
   boxSizing: "border-box",
 };
-
 const buttonStyle = {
   width: "100%",
   padding: 14,
@@ -110,14 +129,12 @@ const buttonStyle = {
   boxShadow: "0 8px 20px rgba(72,0,246,0.6)",
   transition: "all 0.3s ease",
 };
-
 const switchTextStyle = {
   marginTop: 18,
   textAlign: "center",
   fontSize: 14,
   color: "#555",
 };
-
 const switchButtonStyle = {
   background: "none",
   border: "none",
