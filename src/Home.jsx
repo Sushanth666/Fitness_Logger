@@ -7,26 +7,30 @@ function Home() {
   const userEmail = localStorage.getItem("userEmail");
   const navigate = useNavigate();
 
+  // Fitness goals (customize as needed)
   const workoutGoal = 600;
   const caloriesGoal = 240000;
 
+  // Local state
   const [pushups, setPushups] = useState(0);
   const [legWorkouts, setLegWorkouts] = useState(0);
   const [workoutTotal, setWorkoutTotal] = useState(0);
   const [caloriesConsumed, setCaloriesConsumed] = useState(0);
 
   useEffect(() => {
+    // Auth redirect: If not logged in, route to login
     if (!userEmail) {
       navigate("/login");
       return;
     }
-    // Load workout stats
+
+    // Load workout stats for the user
     const wkData = JSON.parse(localStorage.getItem(`workouts_${userEmail}`)) || [];
     const totalPushups = wkData
-      .filter((w) => w.type && w.type.toLowerCase().includes("push"))
+      .filter(w => w.type && w.type.toLowerCase().includes("push"))
       .reduce((sum, w) => sum + Number(w.count || 1), 0);
     const totalLeg = wkData
-      .filter((w) => w.type && w.type.toLowerCase().includes("leg"))
+      .filter(w => w.type && w.type.toLowerCase().includes("leg"))
       .reduce((sum, w) => sum + Number(w.count || 1), 0);
     const totalWorkout = wkData.reduce((sum, w) => sum + Number(w.count || 1), 0);
 
@@ -34,7 +38,7 @@ function Home() {
     setLegWorkouts(totalLeg);
     setWorkoutTotal(totalWorkout);
 
-    // Load calorie data
+    // Load calorie data for the user
     const dietEntries = JSON.parse(localStorage.getItem(`diet_${userEmail}`)) || [];
     const totalCalories = dietEntries.reduce((sum, entry) => sum + Number(entry.calories || 0), 0);
     setCaloriesConsumed(totalCalories);
@@ -70,7 +74,7 @@ function Home() {
             gap: 32,
           }}
         >
-          {/* Left Column: Welcome Card + Calorie Logger */}
+          {/* Left: Welcome Card + Calorie Logger */}
           <div
             style={{
               display: "flex",
@@ -80,13 +84,14 @@ function Home() {
               gap: 24,
             }}
           >
-            {/* Welcome Card */}
+            {/* Welcome card */}
             <div
               style={{
                 width: "100%",
                 padding: 32,
                 borderRadius: 24,
-                background: "linear-gradient(120deg, #ffe2ec 0, #ffd6e0 100%)",
+                background:
+                  "linear-gradient(120deg, #ffe2ec 0, #ffd6e0 100%)",
                 boxShadow: "0 6px 22px rgba(255, 86, 104, 0.16)",
                 textAlign: "center",
               }}
@@ -122,7 +127,7 @@ function Home() {
             </div>
           </div>
 
-          {/* Right Column: Pie Chart */}
+          {/* Right: Pie Chart */}
           <div style={{ flex: "1 1 450px", minWidth: 340, maxWidth: 520 }}>
             <FitnessSummaryChart
               pushups={pushups}
@@ -131,7 +136,6 @@ function Home() {
               workoutGoal={workoutGoal}
               caloriesConsumed={caloriesConsumed}
               caloriesGoal={caloriesGoal}
-              // Optionally: pass a custom color prop if your chart supports it
             />
           </div>
         </div>
